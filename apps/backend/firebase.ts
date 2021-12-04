@@ -5,7 +5,7 @@ import serviceAccount from './serviceAccountKey.json'
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://databaseName.firebaseio.com"
+  databaseURL: "https://editor-project-jbeller-default-rtdb.firebaseio.com/"
 })
 
 export default admin.database()
