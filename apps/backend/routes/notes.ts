@@ -2,6 +2,7 @@ import express, { RequestHandler, Response } from 'express'
 import { WebsocketRequestHandler } from 'express-ws'
 import { Descendant } from 'slate'
 import { NOTE_1, NOTE_2 } from '../fixtures/notes'
+import db from '../firebase'
 
 // Patch `express.Router` to support `.ws()` without needing to pass around a `ws`-ified app.
 // https://github.com/HenningM/express-ws/issues/86
@@ -25,30 +26,19 @@ export interface NoteResponse {
 }
 
 const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
-  // TODO retrieve notes from db
-  res.json({
-    notes: [
-      {
-        id: NOTE_1.id,
-        title: NOTE_1.title
-      }, {
-        id: NOTE_2.id,
-        title: NOTE_2.title
-      }
-    ]
-  })
+  db.collection('notes').get().then(
+    (querySnapshot) => {
+      res.json({
+        notes: querySnapshot.docs.map(doc => ({ id: doc.id, title: doc.get('title') }))
+      })
+    }
+  )
 }
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
-  ws.on('message', () => {
-    switch (req.params.id) {
-      case NOTE_1.id: {
-        return ws.send(JSON.stringify(NOTE_1))
-      }
-      case NOTE_2.id: {
-        return ws.send(JSON.stringify(NOTE_2))
-      }
-    }
+  ws.on('message', async () => {
+    const doc = await db.doc(`notes/${req.params.id}`).get()
+    return ws.send(JSON.stringify(doc.data()))
   })
 }
 
