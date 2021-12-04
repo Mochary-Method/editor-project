@@ -25,6 +25,7 @@ export interface NoteResponse {
 }
 
 const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
+  // TODO retrieve notes from db
   res.json({
     notes: [
       {
