@@ -1,75 +1,90 @@
-import React, { MouseEventHandler } from 'react'
-import { useSlate } from 'slate-react'
-import { toggleBlock, toggleMark, isBlockActive, isMarkActive } from './helpers'
-import { CustomElementType } from './CustomElement'
-import { CustomText } from './CustomLeaf'
-
-interface ButtonProps {
-  active: boolean
-  onMouseDown: MouseEventHandler<HTMLButtonElement>
-}
-
-const Button: React.FC<ButtonProps> = ({ active, children, onMouseDown }) => (
-  <button onMouseDown={onMouseDown} style={{ backgroundColor: active ? '#333' : 'white', color: active ? 'white' : '#333', border: '1px solid #eee' }}>{children}</button>
-)
-
-const Icon: React.FC = ({ children }) => (
-  <span>{children}</span>
-)
+import React, { MouseEventHandler } from "react";
+import { useSlate } from "slate-react";
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
+import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import CodeIcon from "@mui/icons-material/Code";
+import ToggleButton from "@mui/material/ToggleButton";
+import {
+  toggleBlock,
+  toggleMark,
+  isBlockActive,
+  isMarkActive,
+} from "./helpers";
+import { CustomElementType } from "./CustomElement";
+import { CustomText } from "./CustomLeaf";
 
 interface BlockButtonProps {
-  format: CustomElementType
-  icon: string
+  format: CustomElementType;
+  icon: React.ReactNode;
 }
 
 const BlockButton: React.FC<BlockButtonProps> = ({ format, icon }) => {
-  const editor = useSlate()
+  const editor = useSlate();
   return (
-    <Button
-      active={isBlockActive(editor, format)}
+    <ToggleButton
+      size="small"
+      value={format}
+      aria-label={format}
+      selected={isBlockActive(editor, format)}
       onMouseDown={(event) => {
-        event.preventDefault()
-        toggleBlock(editor, format)
+        event.preventDefault();
+        toggleBlock(editor, format);
       }}
     >
-      <Icon>{icon}</Icon>
-    </Button>
-  )
-}
+      {icon}
+    </ToggleButton>
+  );
+};
 
 interface MarkButtonProps {
-  format: keyof CustomText
-  icon: string
+  format: keyof CustomText;
+  icon: React.ReactNode;
 }
-
 
 const MarkButton: React.FC<MarkButtonProps> = ({ format, icon }) => {
-  const editor = useSlate()
+  const editor = useSlate();
   return (
-    <Button
-      active={isMarkActive(editor, format)}
+    <ToggleButton
+      size="small"
+      value={format}
+      aria-label={format}
+      disableRipple={true}
+      selected={isMarkActive(editor, format)}
       onMouseDown={(event) => {
-        event.preventDefault()
-        toggleMark(editor, format)
+        event.preventDefault();
+        toggleMark(editor, format);
       }}
     >
-      <Icon>{icon}</Icon>
-    </Button>
-  )
-}
+      {icon}
+    </ToggleButton>
+  );
+};
 
 export const EditorToolbar: React.FC = () => {
   return (
     <div>
-      <MarkButton format="bold" icon="bold" />
-      <MarkButton format="italic" icon="italic" />
-      <MarkButton format="underline" icon="underlined" />
-      <MarkButton format="code" icon="code" />
+      <MarkButton format="bold" icon={<FormatBoldIcon />} />
+      <MarkButton format="italic" icon={<FormatItalicIcon />} />
+      <MarkButton format="underline" icon={<FormatUnderlinedIcon />} />
+      <MarkButton format="code" icon={<CodeIcon />} />
       <BlockButton format={CustomElementType.headingOne} icon="h1" />
       <BlockButton format={CustomElementType.headingTwo} icon="h2" />
-      <BlockButton format={CustomElementType.blockQuote} icon="quote" />
-      <BlockButton format={CustomElementType.numberedList} icon="list_numbered" />
-      <BlockButton format={CustomElementType.bulletedList} icon="list_bulleted" />
+      <BlockButton
+        format={CustomElementType.blockQuote}
+        icon={<FormatQuoteIcon />}
+      />
+      <BlockButton
+        format={CustomElementType.bulletedList}
+        icon={<FormatListBulletedIcon />}
+      />
+      <BlockButton
+        format={CustomElementType.numberedList}
+        icon={<FormatListNumberedIcon />}
+      />
     </div>
-  )
-}
+  );
+};

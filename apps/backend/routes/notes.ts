@@ -36,7 +36,7 @@ const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
   ws.on('message', async (msg) => {
-    const doc = await db.doc(`notes/${req.params.id}`)
+    const doc = db.doc(`notes/${req.params.id}`)
     if (msg) {
       const note = {
         id: req.params.id,
