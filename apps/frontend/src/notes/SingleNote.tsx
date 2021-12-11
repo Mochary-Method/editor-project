@@ -4,13 +4,14 @@ import { useNote } from './hooks'
 import { ReadyState } from 'react-use-websocket'
 
 import { Paper, TextField, Badge, BadgeTypeMap } from '@mui/material'
+import { Descendant } from 'slate'
 
 interface SingleNoteProps {
   id: string
 }
 
 const Home: React.FC<SingleNoteProps> = ({ id }) => {
-  const { note, readyState } = useNote(id)
+  const { note, readyState, sendMessage } = useNote(id)
 
   const connectionStatusColor = {
     [ReadyState.CONNECTING]: 'info',
@@ -19,6 +20,10 @@ const Home: React.FC<SingleNoteProps> = ({ id }) => {
     [ReadyState.CLOSED]: 'error',
     [ReadyState.UNINSTANTIATED]: 'error',
   }[readyState] as BadgeTypeMap['props']['color']
+
+  const updateContent = (value: Descendant[]) => {
+    sendMessage(JSON.stringify(value))
+  }
 
   return note ? (
     <>
@@ -38,7 +43,7 @@ const Home: React.FC<SingleNoteProps> = ({ id }) => {
           flexDirection: 'column',
         }}
       >
-        <Editor initialValue={note.content} />
+        <Editor initialValue={note.content} onUpdateSocket={updateContent} />
       </Paper>
     </>
   ) : null

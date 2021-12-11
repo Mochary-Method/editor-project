@@ -39,7 +39,8 @@ const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
 }
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
-  ws.on('message', () => {
+  ws.on('message', (data) => {
+    console.log('API message received:', data)
     switch (req.params.id) {
       case NOTE_1.id: {
         return ws.send(JSON.stringify(NOTE_1))

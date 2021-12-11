@@ -7,7 +7,9 @@
   "scripts": {
     "frontend:dev": "npm run dev -w frontend",
     "backend:dev": "npm run dev -w backend",
-    "dev": "run-p frontend:dev backend:dev"
+    "dev": "run-p frontend:dev backend:dev",
+    "open": "open http://localhost:3000",
+    "start": "npm run dev & npm run open"
   },
   "resolutions": {
     "react": "^17.0.2",

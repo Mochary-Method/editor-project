@@ -1,15 +1,11 @@
-## Repository structure
+# Brandon Kent
+[LinkedIn](https://www.linkedin.com/in/brandon-kent/)
 
-We follow the monorepo pattern:
+## Running the project locally
 
-- [apps](apps) contains executable and deployable packages:
-  - [frontend](apps/frontend) contains the user facing Next.JS app.
-  - [backend](apps/backend) contains the backend express app.
+## Presentation
 
-## How to run the system
-
-Start the dev server on [http://localhost:3000](http://localhost:3000) by running **`npm run dev`** in the root folder.
-
-## Type checking and linting
-
-Each app has a `check` script that runs the linting and typechecking. Run it in all apps from the root by running: `npm run check --workspaces`.
+# Phase 1: CRDT or OT?
+# Phase 2: Bugs
+# Phase 3: Database
+# Phase 4: Toolbar

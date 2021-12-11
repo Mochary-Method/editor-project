@@ -25,7 +25,9 @@ export const useNotesList = () => {
 }
 
 export const useNote = (id: string) => {
-  const { readyState, lastMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${id}`)
+  // TODO: Save data as state via context or relay
+  const onMessage = (event: WebSocketEventMap['message']) => console.log(JSON.parse(event.data))
+  const { readyState, lastMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${id}`, { onMessage })
 
   // Send a message when ready on first load
   useEffect(() => {
@@ -38,5 +40,6 @@ export const useNote = (id: string) => {
   return {
     note: lastMessage && JSON.parse(lastMessage.data) as NoteResponse,
     readyState,
+    sendMessage
   }
 }

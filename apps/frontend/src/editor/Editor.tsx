@@ -22,17 +22,27 @@ declare module 'slate' {
 
 interface EditorProps {
   initialValue?: Descendant[]
-  placeholder?: string
+  placeholder?: string,
+  onUpdateSocket?: (value: Descendant[]) => void
 }
 
-export const Editor: React.FC<EditorProps> = ({ initialValue = [], placeholder }) => {
+export const Editor: React.FC<EditorProps> = ({ initialValue = [], placeholder, onUpdateSocket }) => {
   const [value, setValue] = useState<Array<Descendant>>(initialValue)
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const onChange = (value: Descendant[]) => {
+    setValue(value);
+    if (onUpdateSocket) {
+      onUpdateSocket(value);
+    }
+  }
+
+  // TODO: Bring in Relay or Context API to manage "value" state. Will need to update here and in the hook as well.
+  // Replace value and setValue.
 
   return (
-    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+    <Slate editor={editor} value={value} onChange={onChange}>
       <EditorToolbar />
       <Editable
         renderElement={renderElement}
