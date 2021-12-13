@@ -27,14 +27,20 @@ export const useNotesList = () => {
 
 export const useNote = (id: string) => {
   const { updateNoteContent } = useContext(NoteContext);
-  const onMessage = (event: WebSocketEventMap['message']) => updateNoteContent(JSON.parse(event.data))
+  const onMessage = (event: WebSocketEventMap['message']) => console.log(JSON.parse(event.data))
+
+  // TODO: Update context when we get an update from the socket.
+  // const onMessage = (event: WebSocketEventMap['message']) => updateNoteContent(JSON.parse(event.data))
   const { readyState, lastMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${id}`, { onMessage })
 
-  // Send a message when ready on first load
   useEffect(() => {
+
+    // Send a message when ready on first load
     if (readyState === ReadyState.OPEN && lastMessage === null) {
       sendMessage('')
     }
+
+    // Retrieve the document data for the initial load.
     if (lastMessage?.data) {
       updateNoteContent(JSON.parse(lastMessage.data))
     }

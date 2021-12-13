@@ -34,6 +34,8 @@ export const Editor: React.FC<EditorProps> = ({ initialValue = [], placeholder, 
   const onChange = (value: Descendant[]) => {
     const note = {...noteContent, ...{ content: value }}
     updateNoteContent(note)
+
+    // TODO: Send this update w/ a debounce after user is done typing.
     // if (onUpdateSocket) {
     //   onUpdateSocket(note)
     // }

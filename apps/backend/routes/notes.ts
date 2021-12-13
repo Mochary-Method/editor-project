@@ -2,6 +2,7 @@ import express, { RequestHandler, Response } from 'express'
 import { WebsocketRequestHandler } from 'express-ws'
 import { Descendant } from 'slate'
 import { NOTE_1, NOTE_2 } from '../fixtures/notes'
+import automerge from 'automerge';
 
 // Patch `express.Router` to support `.ws()` without needing to pass around a `ws`-ified app.
 // https://github.com/HenningM/express-ws/issues/86
@@ -40,16 +41,24 @@ const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
   ws.on('message', (data) => {
-    // TODO: find in firebase the note by req.params.id, update it w/ new data, send that updated data back via ws.send
+    const update = data || {};
+    let noteBody;
     switch (req.params.id) {
       case NOTE_1.id: {
-        return ws.send(JSON.stringify(NOTE_1))
-        // return ws.send(JSON.stringify({...NOTE_1, ...data}))
+        noteBody = NOTE_1;
       }
       case NOTE_2.id: {
-        return ws.send(JSON.stringify(NOTE_2))
+        noteBody = NOTE_2;
       }
     }
+
+    // let doc = automerge.init();
+    // const fireDoc = TODO: Get doc from firebase.
+    // doc = automerge.merge(doc, fireDoc);
+    // TODO: Save doc to firebase snd send this copy back via the socket.
+
+    // Merging two objects for now until Firebase is setup to save a new doc.
+    return ws.send(JSON.stringify({ ...noteBody, ...update }));
   })
 }
 
