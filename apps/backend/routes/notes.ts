@@ -40,10 +40,11 @@ const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
   ws.on('message', (data) => {
-    console.log('API message received:', data)
+    // TODO: find in firebase the note by req.params.id, update it w/ new data, send that updated data back via ws.send
     switch (req.params.id) {
       case NOTE_1.id: {
         return ws.send(JSON.stringify(NOTE_1))
+        // return ws.send(JSON.stringify({...NOTE_1, ...data}))
       }
       case NOTE_2.id: {
         return ws.send(JSON.stringify(NOTE_2))

@@ -1,8 +1,17 @@
 import Head from 'next/head'
 import type { AppProps } from 'next/app'
 import CssBaseline from '@mui/material/CssBaseline'
+import { NoteContext } from '../src/notes/noteContext'
+import { useState } from 'react'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [ noteContent, setNoteContent ] = useState()
+  const updateNoteContent = (data: any) => setNoteContent(data)
+  const value: any = {
+    noteContent,
+    updateNoteContent
+  }
+
   return (
     <>
       <Head>
@@ -17,7 +26,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <CssBaseline />
-      <Component {...pageProps} />
+
+      <NoteContext.Provider value={value}>
+          <Component {...pageProps} />
+      </NoteContext.Provider>
     </>
   )
 }

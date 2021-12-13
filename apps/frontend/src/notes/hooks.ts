@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import useSWR from 'swr'
 import { NotesResponse, NoteResponse } from '../../../backend/routes/notes'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { NoteContext } from '../notes/noteContext';
 
 // If you want to use GraphQL API or libs like Axios, you can create your own fetcher function. 
 // Check here for more examples: https://swr.vercel.app/docs/data-fetching
@@ -25,8 +26,8 @@ export const useNotesList = () => {
 }
 
 export const useNote = (id: string) => {
-  // TODO: Save data as state via context or relay
-  const onMessage = (event: WebSocketEventMap['message']) => console.log(JSON.parse(event.data))
+  const { updateNoteContent } = useContext(NoteContext);
+  const onMessage = (event: WebSocketEventMap['message']) => updateNoteContent(JSON.parse(event.data))
   const { readyState, lastMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${id}`, { onMessage })
 
   // Send a message when ready on first load
@@ -34,11 +35,13 @@ export const useNote = (id: string) => {
     if (readyState === ReadyState.OPEN && lastMessage === null) {
       sendMessage('')
     }
+    if (lastMessage?.data) {
+      updateNoteContent(JSON.parse(lastMessage.data))
+    }
   }, [readyState, lastMessage])
   
 
   return {
-    note: lastMessage && JSON.parse(lastMessage.data) as NoteResponse,
     readyState,
     sendMessage
   }

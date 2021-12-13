@@ -1,10 +1,10 @@
 // @refresh reset // Fixes hot refresh errors in development https://github.com/ianstormtaylor/slate/issues/3477
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useContext } from 'react'
 import { createEditor, Descendant, BaseEditor } from 'slate'
 import { withHistory, HistoryEditor } from 'slate-history'
 import { handleHotkeys } from './helpers'
-
+import { NoteContext } from '../notes/noteContext'
 import { Editable, withReact, Slate, ReactEditor } from 'slate-react'
 import { EditorToolbar } from './EditorToolbar'
 import { CustomElement } from './CustomElement'
@@ -27,22 +27,20 @@ interface EditorProps {
 }
 
 export const Editor: React.FC<EditorProps> = ({ initialValue = [], placeholder, onUpdateSocket }) => {
-  const [value, setValue] = useState<Array<Descendant>>(initialValue)
+  const { noteContent, updateNoteContent }: any = useContext(NoteContext)
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
   const onChange = (value: Descendant[]) => {
-    setValue(value);
-    if (onUpdateSocket) {
-      onUpdateSocket(value);
-    }
+    const note = {...noteContent, ...{ content: value }}
+    updateNoteContent(note)
+    // if (onUpdateSocket) {
+    //   onUpdateSocket(note)
+    // }
   }
 
-  // TODO: Bring in Relay or Context API to manage "value" state. Will need to update here and in the hook as well.
-  // Replace value and setValue.
-
   return (
-    <Slate editor={editor} value={value} onChange={onChange}>
+    <Slate editor={editor} value={noteContent.content} onChange={onChange}>
       <EditorToolbar />
       <Editable
         renderElement={renderElement}
