@@ -21,7 +21,7 @@ export interface NotesResponse {
 export interface NoteResponse {
   id: string
   title: string
-  content: Array<Descendant>
+  content: Descendant[]
 }
 
 const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {

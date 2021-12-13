@@ -16,6 +16,7 @@ export enum CustomElementType {
 
 export interface CustomElement extends BaseElement {
   type: CustomElementType;
+  url?: string;
 }
 
 export const CustomElement: React.FC<RenderElementProps> = ({

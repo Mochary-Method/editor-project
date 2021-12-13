@@ -1,4 +1,4 @@
-import { Editor, Transforms, Element as SlateElement } from 'slate'
+import { Editor, Transforms, CustomTypes, Element as SlateElement } from 'slate'
 import isHotkey from 'is-hotkey'
 import { KeyboardEvent } from 'react'
 import { CustomElementType } from './CustomElement'
